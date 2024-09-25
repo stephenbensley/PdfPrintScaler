@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DC1889CC2CA39CBF007C20C2 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC1889CB2CA39CBF007C20C2 /* UniformTypeIdentifiers.framework */; };
 		DC1889D82CA39CBF007C20C2 /* PrintScaled.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DC1889C92CA39CBF007C20C2 /* PrintScaled.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -38,7 +37,6 @@
 /* Begin PBXFileReference section */
 		DC1889B42CA39C9E007C20C2 /* PdfPrintScaler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PdfPrintScaler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC1889C92CA39CBF007C20C2 /* PrintScaled.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PrintScaled.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		DC1889CB2CA39CBF007C20C2 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -79,7 +77,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC1889CC2CA39CBF007C20C2 /* UniformTypeIdentifiers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +86,6 @@
 		DC1889AB2CA39C9E007C20C2 = {
 			isa = PBXGroup;
 			children = (
-				DC1889CA2CA39CBF007C20C2 /* Frameworks */,
 				DC1889B62CA39C9E007C20C2 /* PdfPrintScaler */,
 				DC1889CD2CA39CBF007C20C2 /* PrintScaled */,
 				DC1889B52CA39C9E007C20C2 /* Products */,
@@ -104,14 +100,6 @@
 				DC1889C92CA39CBF007C20C2 /* PrintScaled.appex */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		DC1889CA2CA39CBF007C20C2 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				DC1889CB2CA39CBF007C20C2 /* UniformTypeIdentifiers.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		DC188A012CA3A308007C20C2 /* Resources */ = {
@@ -379,7 +367,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"PdfPrintScaler/Preview Content\"";
 				DEVELOPMENT_TEAM = 6X2P4HJBQW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -408,7 +395,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"PdfPrintScaler/Preview Content\"";
 				DEVELOPMENT_TEAM = 6X2P4HJBQW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
