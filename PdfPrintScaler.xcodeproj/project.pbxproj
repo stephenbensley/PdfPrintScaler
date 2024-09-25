@@ -89,10 +89,11 @@
 		DC1889AB2CA39C9E007C20C2 = {
 			isa = PBXGroup;
 			children = (
+				DC1889CA2CA39CBF007C20C2 /* Frameworks */,
 				DC1889B62CA39C9E007C20C2 /* PdfPrintScaler */,
 				DC1889CD2CA39CBF007C20C2 /* PrintScaled */,
-				DC1889CA2CA39CBF007C20C2 /* Frameworks */,
 				DC1889B52CA39C9E007C20C2 /* Products */,
+				DC188A012CA3A308007C20C2 /* Resources */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,6 +112,13 @@
 				DC1889CB2CA39CBF007C20C2 /* UniformTypeIdentifiers.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DC188A012CA3A308007C20C2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
