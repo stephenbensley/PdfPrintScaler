@@ -31,16 +31,6 @@ final class ActionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
-              let itemProvider = extensionItem.attachments?.first else {
-            return close()
-        }
-        
-        itemProvider.loadItem(forTypeIdentifier: UTType.pdf.identifier) { (item, _) in
-            guard let url = item as? URL else { return self.close() }
-            self.performAction(on: url)
-        }
-
         NotificationCenter.default.addObserver(
             forName: NSNotification.Name("close"),
             object: nil,
@@ -50,17 +40,27 @@ final class ActionViewController: UIViewController {
                 self.close()
             }
         }
+
+        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
+              let itemProvider = extensionItem.attachments?.first else {
+            return close()
+        }
+        
+        itemProvider.loadItem(forTypeIdentifier: UTType.pdf.identifier) { (item, _) in
+            guard let url = item as? URL else { return Self.postClose() }
+            self.performAction(on: url)
+        }
     }
     
     private func close() {
         extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
 
-    static func postClose() {
+    nonisolated static func postClose() {
         NotificationCenter.default.post(name: NSNotification.Name("close"), object: nil)
     }
 
-    private func performAction(on url: URL) {
+    nonisolated private func performAction(on url: URL) {
         DispatchQueue.main.async {
             let ctrl = UIHostingController(rootView: ContentView(url: url, dismiss: Self.postClose))
             self.addChild(ctrl)
