@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DC1889D82CA39CBF007C20C2 /* PrintScaled.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DC1889C92CA39CBF007C20C2 /* PrintScaled.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DCD4B9DD2CA8A4A800A506AC /* UtiliKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCD4B9DC2CA8A4A800A506AC /* UtiliKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCD4B9DD2CA8A4A800A506AC /* UtiliKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +133,7 @@
 			);
 			name = PdfPrintScaler;
 			packageProductDependencies = (
+				DCD4B9DC2CA8A4A800A506AC /* UtiliKit */,
 			);
 			productName = PdfPrintScaler;
 			productReference = DC1889B42CA39C9E007C20C2 /* PdfPrintScaler.app */;
@@ -185,6 +188,9 @@
 			);
 			mainGroup = DC1889AB2CA39C9E007C20C2;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DCD4B9DB2CA8A4A800A506AC /* XCRemoteSwiftPackageReference "UtiliKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DC1889B52CA39C9E007C20C2 /* Products */;
 			projectDirPath = "";
@@ -495,6 +501,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DCD4B9DB2CA8A4A800A506AC /* XCRemoteSwiftPackageReference "UtiliKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephenbensley/UtiliKit";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DCD4B9DC2CA8A4A800A506AC /* UtiliKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCD4B9DB2CA8A4A800A506AC /* XCRemoteSwiftPackageReference "UtiliKit" */;
+			productName = UtiliKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DC1889AC2CA39C9E007C20C2 /* Project object */;
 }
