@@ -14,10 +14,12 @@ struct ScaledPrintView: View {
     @State private var pageNumber = 0
     @State private var scaleFactor: CGFloat = 1.0
     private let unknownPage = UIImage(named: "UnknownPage") ?? UIImage()
-
-    var currentPage: UIImage { doc?.page(at: pageNumber)?.uiImage() ?? unknownPage }
+    
+    var currentPage: UIImage {
+        doc?.page(at: pageNumber - 1)?.uiImage(dpi: 150.0) ?? unknownPage
+    }
     var pageCount: Int { doc?.pageCount ?? 0 }
-
+    
     var body: some View {
         VStack {
             if doc == nil {
@@ -25,6 +27,11 @@ struct ScaledPrintView: View {
             } else {
                 ScaledImage(image: currentPage, scaleFactor: scaleFactor)
             }
+            PagePicker(pageNumber: $pageNumber, pageCount: pageCount)
+        }
+        .onChange(of: doc) { _, _ in
+            pageNumber = min(pageCount, 1)
+            scaleFactor = 1.0
         }
         .padding()
     }

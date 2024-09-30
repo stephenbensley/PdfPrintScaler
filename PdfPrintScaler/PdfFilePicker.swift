@@ -28,6 +28,7 @@ struct PdfFilePicker: View {
             Button("Select PDF file…") { showFilePicker = true }
                 .frame(size: proxy.size.shrinkToAspectRatio(aspectRatio))
                 .border(Color.red)
+                .frame(size: proxy.size)
         }
         .fileImporter(isPresented: $showFilePicker, allowedContentTypes: [.pdf]) { result in
             switch result {

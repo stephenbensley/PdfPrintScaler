@@ -27,6 +27,7 @@ struct ScaledImage: View {
                 .frame(size: frameSize.scaled(by: scaleFactor))
                 .frame(size: frameSize)
                 .border(Color.red)
+                .frame(size: proxy.size)
         }
     }
 }
