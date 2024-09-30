@@ -12,13 +12,14 @@ import SwiftUI
 struct ScaledPrintView: View {
     @State private var doc: PDFDocument? = nil
     @State private var pageNumber = 0
-    @State private var scaleFactor: CGFloat = 1.0
+    @State private var scale: Int = 100
     private let unknownPage = UIImage(named: "UnknownPage") ?? UIImage()
     
     var currentPage: UIImage {
         doc?.page(at: pageNumber - 1)?.uiImage(dpi: 150.0) ?? unknownPage
     }
     var pageCount: Int { doc?.pageCount ?? 0 }
+    var scaleFactor: CGFloat { CGFloat(scale)/100.0 }
     
     var body: some View {
         VStack {
@@ -28,10 +29,11 @@ struct ScaledPrintView: View {
                 ScaledImage(image: currentPage, scaleFactor: scaleFactor)
             }
             PagePicker(pageNumber: $pageNumber, pageCount: pageCount)
+            ScalePicker(scale: $scale)
         }
         .onChange(of: doc) { _, _ in
             pageNumber = min(pageCount, 1)
-            scaleFactor = 1.0
+            scale = 100
         }
         .padding()
     }
