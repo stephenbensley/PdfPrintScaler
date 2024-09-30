@@ -16,8 +16,8 @@ struct PdfFilePicker: View {
     @State private var showFilePicker = false
     @State private var errorMessage = ""
     @State private var showError = false
-    // Aspect ratio for the blank placeholder.
-    private let aspectRatio: CGFloat = 11.0/8.5
+    // User letter-sized aspect ratio for the placeholder frame.
+    private let aspectRatio: CGFloat = 8.5/11.0
     
     init(doc: Binding<PDFDocument?>) {
         self._doc = doc
@@ -26,10 +26,10 @@ struct PdfFilePicker: View {
     var body: some View {
         GeometryReader { proxy in
             Button("Select PDF file…") { showFilePicker = true }
-                .frame(size: proxy.size.shrinkToAspectRatio(aspectRatio))
-                .border(Color.red)
                 .frame(size: proxy.size)
-        }
+                .border(Color.red)
+         }
+        .aspectRatio(aspectRatio, contentMode: .fit)
         .fileImporter(isPresented: $showFilePicker, allowedContentTypes: [.pdf]) { result in
             switch result {
             case .success(let url):

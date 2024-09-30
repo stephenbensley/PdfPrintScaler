@@ -21,14 +21,14 @@ struct ScaledImage: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let frameSize = proxy.size.shrinkToAspectRatio(image.size.aspectRatio)
             Image(uiImage: image)
                 .resizable()
-                .frame(size: frameSize.scaled(by: scaleFactor))
-                .frame(size: frameSize)
-                .border(Color.red)
+                .frame(size: proxy.size.scaled(by: scaleFactor))
                 .frame(size: proxy.size)
+                .clipped()
+                .border(Color.red)
         }
+        .aspectRatio(image.size.aspectRatio, contentMode: .fit)
     }
 }
 
