@@ -9,7 +9,7 @@ import SwiftUI
 
 // A control for selecting the scale factor.
 struct ScalePicker: View {
-    @ScaledMetric private var maxWidth = 225.0
+    @ScaledMetric(relativeTo: .body) private var maxWidth = 225.0
     @Binding private var scale: Int
 
     init(scale: Binding<Int>) {

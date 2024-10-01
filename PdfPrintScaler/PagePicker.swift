@@ -9,7 +9,7 @@ import SwiftUI
 
 // A control for selecting the page number to preview.
 struct PagePicker: View {
-    @ScaledMetric private var maxWidth = 225.0
+    @ScaledMetric(relativeTo: .body) private var maxWidth = 225.0
     @Binding private var pageNumber: Int
     private let pageCount: Int
     private let firstPage: Int

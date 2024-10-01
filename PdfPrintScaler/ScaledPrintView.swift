@@ -13,7 +13,7 @@ struct ScaledPrintView: View {
     @State private var doc: PDFDocument? = nil
     @State private var pageNumber = 0
     @State private var scale: Int = 100
-    @ScaledMetric private var buttonWidth = 70.0
+    @ScaledMetric(relativeTo: .body) private var buttonWidth = 70.0
     @State private var showProgress = false
     private let unknownPage = UIImage(named: "UnknownPage") ?? UIImage()
     
