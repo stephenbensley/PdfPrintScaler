@@ -42,10 +42,11 @@ struct ScaledPrintView: View {
                 })
                 .buttonStyle(.bordered)
                 Button(action: {
+                    guard let doc = doc else { return }
                     Task {
                         showProgress = true
-                        if let data = await scalePdf() {
-                            await printPdf(data: data)
+                        if let data = await Self.scalePdf(doc: doc, scaleFactor: scaleFactor) {
+                            await Self.printData(data: data)
                         }
                         showProgress = false
                     }
@@ -67,7 +68,7 @@ struct ScaledPrintView: View {
         .padding()
     }
     
-    private func printPdf(data: Data) async {
+    static private func printData(data: Data) async {
         let printInfo = UIPrintInfo(dictionary: nil)
         printInfo.outputType = .general
         
@@ -82,15 +83,14 @@ struct ScaledPrintView: View {
         }
     }
     
-    private func scalePdf() async -> Data? {
-        guard let data = doc?.dataRepresentation() else { return nil }
+    static private func scalePdf(doc: PDFDocument, scaleFactor: CGFloat) async -> Data? {
+        guard let data = doc.dataRepresentation() else { return nil }
         // Must be detached to avoid hogging MainActor
         let task = Task.detached {
-            await PDFDocument(data: data)?.scaleBy(scaleFactor)
+            PDFDocument(data: data)?.scaleBy(scaleFactor)
         }
         return await task.result.get()
     }
-    
 }
 
 #Preview {
