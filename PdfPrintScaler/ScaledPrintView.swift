@@ -13,6 +13,8 @@ struct ScaledPrintView: View {
     @State private var doc: PDFDocument? = nil
     @State private var pageNumber = 0
     @State private var scale: Int = 100
+    @ScaledMetric private var buttonWidth = 70.0
+    @State private var showProgress = false
     private let unknownPage = UIImage(named: "UnknownPage") ?? UIImage()
     
     var currentPage: UIImage {
@@ -30,6 +32,33 @@ struct ScaledPrintView: View {
             }
             PagePicker(pageNumber: $pageNumber, pageCount: pageCount)
             ScalePicker(scale: $scale)
+            HStack {
+                Spacer()
+                Button(action: {
+                    doc = nil
+                }, label: {
+                    Text("Cancel")
+                        .frame(width: buttonWidth)
+                })
+                .buttonStyle(.bordered)
+                Button(action: {
+                    Task {
+                        showProgress = true
+                        if let data = await scalePdf() {
+                            await printPdf(data: data)
+                        }
+                        showProgress = false
+                    }
+                }, label: {
+                    Text("Print")
+                        .frame(width: buttonWidth)
+                })
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .sheet(isPresented: $showProgress) {
+            ProgressView("Preparing PDF to print…")
+                .presentationDetents([.medium])
         }
         .onChange(of: doc) { _, _ in
             pageNumber = min(pageCount, 1)
@@ -37,6 +66,31 @@ struct ScaledPrintView: View {
         }
         .padding()
     }
+    
+    private func printPdf(data: Data) async {
+        let printInfo = UIPrintInfo(dictionary: nil)
+        printInfo.outputType = .general
+        
+        let printController = UIPrintInteractionController.shared
+        printController.printInfo = printInfo
+        printController.printingItem = data
+        
+        await withCheckedContinuation { continuation in
+            printController.present(animated: true) { _, _, _ in
+                continuation.resume()
+            }
+        }
+    }
+    
+    private func scalePdf() async -> Data? {
+        guard let data = doc?.dataRepresentation() else { return nil }
+        // Must be detached to avoid hogging MainActor
+        let task = Task.detached {
+            await PDFDocument(data: data)?.scaleBy(scaleFactor)
+        }
+        return await task.result.get()
+    }
+    
 }
 
 #Preview {
