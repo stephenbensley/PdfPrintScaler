@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UtiliKit
 
 // Presents a scaled image. Scaled is not the same as resized. The original image dimensions are
 // preserved. If scaleFactor > 1.0, some of the image will be cropped. If scaleFactor < 1.0,
@@ -18,7 +19,7 @@ struct ScaledImage: View {
         self.image = image
         self.scaleFactor = scaleFactor
     }
-
+    
     var body: some View {
         GeometryReader { proxy in
             Image(uiImage: image)

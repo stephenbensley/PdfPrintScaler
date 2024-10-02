@@ -9,45 +9,36 @@ import PDFKit
 import SwiftUI
 
 // Main view for the Scaled Print functionality -- shared between the app and the extension.
-struct ScaledPrintView: View {
-    @State private var doc: PDFDocument? = nil
-    @State private var pageNumber = 0
-    @State private var scale: Int = 100
+struct ScalablePdfView: View {
+    @Bindable private var pdf: ScalablePdf
+    private let dismiss: () -> Void
     @ScaledMetric(relativeTo: .body) private var buttonWidth = 70.0
     @State private var showProgress = false
-    private let unknownPage = UIImage(named: "UnknownPage") ?? UIImage()
     
-    var currentPage: UIImage {
-        doc?.page(at: pageNumber - 1)?.uiImage(dpi: 150.0) ?? unknownPage
+    init(pdf: ScalablePdf, dismiss: @escaping () -> Void) {
+        self.pdf = pdf
+        self.dismiss = dismiss
     }
-    var pageCount: Int { doc?.pageCount ?? 0 }
-    var scaleFactor: CGFloat { CGFloat(scale)/100.0 }
     
     var body: some View {
         VStack {
-            if doc == nil {
-                PdfFilePicker(doc: $doc)
-            } else {
-                ScaledImage(image: currentPage, scaleFactor: scaleFactor)
-            }
-            PagePicker(pageNumber: $pageNumber, pageCount: pageCount)
-            ScalePicker(scale: $scale)
+            ScaledImage(image: pdf.preview, scaleFactor: pdf.scaleFactor)
+            PagePicker(pageNumber: $pdf.pageNumber, pageCount: pdf.pageCount)
+            ScalePicker(scale: $pdf.scale)
             HStack {
                 Spacer()
                 Button(action: {
-                    doc = nil
-                }, label: {
+                        dismiss()
+                 }, label: {
                     Text("Cancel")
                         .frame(width: buttonWidth)
                 })
                 .buttonStyle(.bordered)
                 Button(action: {
-                    guard let doc = doc else { return }
-                    Task {
+                    Task { [pdf] in
                         showProgress = true
-                        if let data = await Self.scalePdf(doc: doc, scaleFactor: scaleFactor) {
-                            await Self.printData(data: data)
-                        }
+                        let scaled = await pdf.scalePdf()
+                        await Self.printData(data: scaled)
                         showProgress = false
                     }
                 }, label: {
@@ -60,10 +51,6 @@ struct ScaledPrintView: View {
         .sheet(isPresented: $showProgress) {
             ProgressView("Preparing PDF to print…")
                 .presentationDetents([.medium])
-        }
-        .onChange(of: doc) { _, _ in
-            pageNumber = min(pageCount, 1)
-            scale = 100
         }
         .padding()
     }
@@ -82,17 +69,4 @@ struct ScaledPrintView: View {
             }
         }
     }
-    
-    static private func scalePdf(doc: PDFDocument, scaleFactor: CGFloat) async -> Data? {
-        guard let data = doc.dataRepresentation() else { return nil }
-        // Must be detached to avoid hogging MainActor
-        let task = Task.detached {
-            PDFDocument(data: data)?.scaleBy(scaleFactor)
-        }
-        return await task.result.get()
-    }
-}
-
-#Preview {
-    ScaledPrintView()
 }

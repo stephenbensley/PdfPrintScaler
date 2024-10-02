@@ -10,8 +10,9 @@ import UIKit
 import UniformTypeIdentifiers
 
 struct ContentView: View {
-    let url: URL
-    let dismiss: () -> Void
+    private let url: URL
+    private let dismiss: () -> Void
+    @State private var pdf: ScalablePdf?
     
     init(url: URL, dismiss: @escaping () -> Void) {
         self.url = url
@@ -19,11 +20,20 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack {
-            Text(url.absoluteString)
-            Button("Close") { dismiss() }
+        Group {
+            if let pdf = pdf {
+                ScalablePdfView(pdf: pdf, dismiss: dismiss)
+            } else {
+                ProgressView()
+            }
         }
-        .padding()
+        .onAppear {
+             if let pdf = ScalablePdf(url: url) {
+                self.pdf = pdf
+            } else {
+                dismiss()
+            }
+        }
     }
 }
 
@@ -40,7 +50,7 @@ final class ActionViewController: UIViewController {
                 self.close()
             }
         }
-
+        
         guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
               let itemProvider = extensionItem.attachments?.first else {
             return close()
@@ -55,17 +65,17 @@ final class ActionViewController: UIViewController {
     private func close() {
         extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
-
+    
     nonisolated static func postClose() {
         NotificationCenter.default.post(name: NSNotification.Name("close"), object: nil)
     }
-
+    
     nonisolated private func performAction(on url: URL) {
         DispatchQueue.main.async {
             let ctrl = UIHostingController(rootView: ContentView(url: url, dismiss: Self.postClose))
             self.addChild(ctrl)
             self.view.addSubview(ctrl.view)
-
+            
             ctrl.view.translatesAutoresizingMaskIntoConstraints = false
             ctrl.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
             ctrl.view.bottomAnchor.constraint (equalTo: self.view.bottomAnchor).isActive = true

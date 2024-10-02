@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DC1889D82CA39CBF007C20C2 /* PrintScaled.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DC1889C92CA39CBF007C20C2 /* PrintScaled.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DCD4B9DD2CA8A4A800A506AC /* UtiliKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCD4B9DC2CA8A4A800A506AC /* UtiliKit */; };
+		DCE401CB2CACD08E00A8D592 /* UtiliKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCE401CA2CACD08E00A8D592 /* UtiliKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,11 @@
 			path = PrintScaled;
 			sourceTree = "<group>";
 		};
+		DCE401C02CACD02600A8D592 /* Common */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Common;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCE401CB2CACD08E00A8D592 /* UtiliKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,10 +95,12 @@
 		DC1889AB2CA39C9E007C20C2 = {
 			isa = PBXGroup;
 			children = (
+				DCE401C02CACD02600A8D592 /* Common */,
 				DC1889B62CA39C9E007C20C2 /* PdfPrintScaler */,
 				DC1889CD2CA39CBF007C20C2 /* PrintScaled */,
 				DC1889B52CA39C9E007C20C2 /* Products */,
 				DC188A012CA3A308007C20C2 /* Resources */,
+				DCE401C92CACD08E00A8D592 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,6 +118,13 @@
 			children = (
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		DCE401C92CACD08E00A8D592 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -130,6 +146,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				DC1889B62CA39C9E007C20C2 /* PdfPrintScaler */,
+				DCE401C02CACD02600A8D592 /* Common */,
 			);
 			name = PdfPrintScaler;
 			packageProductDependencies = (
@@ -153,9 +170,11 @@
 			);
 			fileSystemSynchronizedGroups = (
 				DC1889CD2CA39CBF007C20C2 /* PrintScaled */,
+				DCE401C02CACD02600A8D592 /* Common */,
 			);
 			name = PrintScaled;
 			packageProductDependencies = (
+				DCE401CA2CACD08E00A8D592 /* UtiliKit */,
 			);
 			productName = PrintScaled;
 			productReference = DC1889C92CA39CBF007C20C2 /* PrintScaled.appex */;
@@ -515,6 +534,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		DCD4B9DC2CA8A4A800A506AC /* UtiliKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCD4B9DB2CA8A4A800A506AC /* XCRemoteSwiftPackageReference "UtiliKit" */;
+			productName = UtiliKit;
+		};
+		DCE401CA2CACD08E00A8D592 /* UtiliKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DCD4B9DB2CA8A4A800A506AC /* XCRemoteSwiftPackageReference "UtiliKit" */;
 			productName = UtiliKit;
