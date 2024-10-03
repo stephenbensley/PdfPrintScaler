@@ -9,18 +9,32 @@ import Foundation
 import Observation
 import PDFKit
 
+enum PdfError: LocalizedError {
+    case invalidData
+    case emptyFile
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidData:
+            "Data in PDF file is invalid or corrupt."
+        case .emptyFile:
+            "PDF file does not contain any pages."
+        }
+    }
+}
+
 // Model of a scalable PDF
 @Observable class ScalablePdf {
     let data: Data
     let doc: PDFDocument
     var pageNumber = 1
     var scale = 100
+    
+    init(url: URL) throws {
+        let data = try Data(contentsOf: url)
+        guard let doc = PDFDocument(data: data) else { throw PdfError.invalidData }
+        guard doc.pageCount > 0 else { throw PdfError.emptyFile }
 
-    init?(url: URL) {
-        guard let data = try? Data(contentsOf: url) else { return nil }
-        guard let doc = PDFDocument(data: data) else { return nil }
-        guard doc.pageCount > 0 else { return nil }
-        
         self.data = data
         self.doc = doc
     }
@@ -28,7 +42,7 @@ import PDFKit
     var pageCount: Int { doc.pageCount }
     var preview: UIImage { doc.page(at: pageNumber - 1)!.uiImage(dpi: 150.0) }
     var scaleFactor: CGFloat { CGFloat(scale)/100.0 }
-
+    
     func scalePdf() async -> Data {
         // Must be detached to avoid hogging MainActor
         let task = Task.detached { [data, scaleFactor] in

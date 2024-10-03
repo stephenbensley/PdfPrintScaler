@@ -18,26 +18,32 @@ struct ContentView: View {
             Text("PDF Print Scaler")
                 .font(.title)
             if let pdf = pdf {
-                ScalablePdfView(pdf: pdf, dismiss: { })
+                ScalablePdfView(pdf: pdf, dismiss: clear)
             } else {
                 PdfFilePicker(url: $url)
             }
         }
         .onChange(of: url) {
             guard let url = url else { return }
-            if let pdf = ScalablePdf(url: url) {
-                self.pdf = pdf
-            } else {
-                errorMessage = "Unable to open \(url)."
+            do {
+                pdf = try ScalablePdf(url: url)
+            }
+            catch {
+                errorMessage = error.localizedDescription
                 showError = true
             }
         }
         .alert("Error Opening File", isPresented: $showError) {
-            Button("OK", role: .cancel) { }
+            Button("OK") { clear() }
         } message: {
             Text(errorMessage)
         }
         .padding()
+    }
+    
+    func clear() {
+        url = nil
+        pdf = nil
     }
 }
 

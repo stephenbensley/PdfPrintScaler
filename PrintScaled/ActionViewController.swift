@@ -13,7 +13,9 @@ struct ContentView: View {
     private let url: URL
     private let dismiss: () -> Void
     @State private var pdf: ScalablePdf?
-    
+    @State private var errorMessage = ""
+    @State private var showError = false
+
     init(url: URL, dismiss: @escaping () -> Void) {
         self.url = url
         self.dismiss = dismiss
@@ -27,11 +29,18 @@ struct ContentView: View {
                 ProgressView()
             }
         }
+        .alert("Error Opening File", isPresented: $showError) {
+            Button("OK") { dismiss() }
+        } message: {
+            Text(errorMessage)
+        }
         .onAppear {
-             if let pdf = ScalablePdf(url: url) {
-                self.pdf = pdf
-            } else {
-                dismiss()
+            do {
+                pdf = try ScalablePdf(url: url)
+            }
+            catch {
+                errorMessage = error.localizedDescription
+                showError = true
             }
         }
     }
