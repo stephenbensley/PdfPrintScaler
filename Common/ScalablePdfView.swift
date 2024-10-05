@@ -13,7 +13,7 @@ struct ScalablePdfView: View {
     @Bindable private var pdf: ScalablePdf
     private let dismiss: () -> Void
     @ScaledMetric(relativeTo: .body) private var buttonWidth = 70.0
-    @State private var showProgress = false
+    @State private var showPrint = false
     
     init(pdf: ScalablePdf, dismiss: @escaping () -> Void) {
         self.pdf = pdf
@@ -35,12 +35,7 @@ struct ScalablePdfView: View {
                 })
                 .buttonStyle(.bordered)
                 Button(action: {
-                    Task { [pdf] in
-                        showProgress = true
-                        let scaled = await pdf.scalePdf()
-                        await Self.printData(data: scaled)
-                        showProgress = false
-                    }
+                    showPrint = true
                 }, label: {
                     Text("Print")
                         .frame(width: buttonWidth)
@@ -48,25 +43,10 @@ struct ScalablePdfView: View {
                 .buttonStyle(.borderedProminent)
             }
         }
-        .sheet(isPresented: $showProgress) {
-            ProgressView("Preparing PDF to print…")
+        .sheet(isPresented: $showPrint) {
+            PrintView(pdf: pdf, dismiss: { showPrint = false })
                 .presentationDetents([.medium])
         }
         .padding()
-    }
-    
-    static private func printData(data: Data) async {
-        let printInfo = UIPrintInfo(dictionary: nil)
-        printInfo.outputType = .general
-        
-        let printController = UIPrintInteractionController.shared
-        printController.printInfo = printInfo
-        printController.printingItem = data
-        
-        await withCheckedContinuation { continuation in
-            printController.present(animated: true) { _, _, _ in
-                continuation.resume()
-            }
-        }
     }
 }

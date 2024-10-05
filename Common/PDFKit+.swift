@@ -32,7 +32,11 @@ public extension PDFPage {
 public extension PDFDocument {
     // Scales each page in the document by the given scale factor. Page size remains unchanged,
     // only the content is scaled.
-    func scaleBy(_ scaleFactor: CGFloat, dpi: CGFloat = 300.0) -> Data {
+    func scaleBy(
+        _ scaleFactor: CGFloat,
+        dpi: CGFloat = 300.0,
+        pageComplete: (Int) -> Void = { _ in }
+    ) -> Data {
         // PDF coordinates are in points with 72 points per inch.
         let ppi = 72.0
         // Letter-sized rectangle.
@@ -43,6 +47,7 @@ public extension PDFDocument {
         
         return UIGraphicsPDFRenderer(bounds: bounds).pdfData { context in
             for i in 0..<self.pageCount {
+                guard !Task.isCancelled else { break }
                 guard let page = self.page(at: i) else { continue }
                 let pageSize = page.bounds(for: .mediaBox).size
                 let image = page.uiImage(dpi: dpi)
@@ -57,6 +62,7 @@ public extension PDFDocument {
                 )
                 context.beginPage(withBounds: page.bounds(for: .mediaBox), pageInfo: .init())
                 image.draw(in: .init(origin: imageOrigin, size: imageSize))
+                pageComplete(i + 1)
             }
         }
     }

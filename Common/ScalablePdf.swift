@@ -12,7 +12,7 @@ import PDFKit
 enum PdfError: LocalizedError {
     case invalidData
     case emptyFile
-
+    
     var errorDescription: String? {
         switch self {
         case .invalidData:
@@ -34,7 +34,7 @@ enum PdfError: LocalizedError {
         let data = try Data(contentsOf: url)
         guard let doc = PDFDocument(data: data) else { throw PdfError.invalidData }
         guard doc.pageCount > 0 else { throw PdfError.emptyFile }
-
+        
         self.data = data
         self.doc = doc
     }
@@ -43,11 +43,7 @@ enum PdfError: LocalizedError {
     var preview: UIImage { doc.page(at: pageNumber - 1)!.uiImage(dpi: 150.0) }
     var scaleFactor: CGFloat { CGFloat(scale)/100.0 }
     
-    func scalePdf() async -> Data {
-        // Must be detached to avoid hogging MainActor
-        let task = Task.detached { [data, scaleFactor] in
-            PDFDocument(data: data)!.scaleBy(scaleFactor)
-        }
-        return await task.result.get()
+    func scalePdf(pageComplete: (Int) -> Void) -> Data {
+        PDFDocument(data: data)!.scaleBy(scaleFactor, pageComplete: pageComplete)
     }
 }
