@@ -67,3 +67,13 @@ public extension PDFDocument {
         }
     }
 }
+
+extension PDFDocument: @retroactive RandomAccessCollection {
+    public typealias Index = Int
+    public typealias Element = PDFPage
+    
+    public var startIndex: Index { 0 }
+    public var endIndex: Index { pageCount }
+    public subscript(index: Index) -> Iterator.Element {page(at: index)! }
+    public func index(after i: Index) -> Index { i + 1 }
+}

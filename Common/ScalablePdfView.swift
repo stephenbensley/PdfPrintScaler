@@ -22,8 +22,7 @@ struct ScalablePdfView: View {
     
     var body: some View {
         VStack {
-            ScaledImage(image: pdf.preview, scaleFactor: pdf.scaleFactor)
-            PagePicker(pageNumber: $pdf.pageNumber, pageCount: pdf.pageCount)
+            ScaledPdfView(pdf: pdf)
             ScalePicker(scale: $pdf.scale)
             HStack {
                 Spacer()
