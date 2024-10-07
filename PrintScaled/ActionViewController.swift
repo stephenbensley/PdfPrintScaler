@@ -9,43 +9,6 @@ import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 
-struct ContentView: View {
-    private let url: URL
-    private let dismiss: () -> Void
-    @State private var pdf: ScalablePdf?
-    @State private var errorMessage = ""
-    @State private var showError = false
-
-    init(url: URL, dismiss: @escaping () -> Void) {
-        self.url = url
-        self.dismiss = dismiss
-    }
-    
-    var body: some View {
-        Group {
-            if let pdf = pdf {
-                ScalablePdfView(pdf: pdf, dismiss: dismiss)
-            } else {
-                ProgressView()
-            }
-        }
-        .alert("Error Opening File", isPresented: $showError) {
-            Button("OK") { dismiss() }
-        } message: {
-            Text(errorMessage)
-        }
-        .onAppear {
-            do {
-                pdf = try ScalablePdf(url: url)
-            }
-            catch {
-                errorMessage = error.localizedDescription
-                showError = true
-            }
-        }
-    }
-}
-
 final class ActionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()

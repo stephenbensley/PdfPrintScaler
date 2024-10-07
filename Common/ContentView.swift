@@ -17,17 +17,29 @@ struct PdfPrintScalerInfo: AboutInfo {
 }
 
 struct ContentView: View {
+    private let dismiss: (() -> Void)?
     @State private var url: URL?
-    @State private var pdf: ScalablePdf?
+    @State private var pdf: ScalablePdf? = nil
     @State private var showAbout = false
     @State private var showError = false
     @State private var errorMessage = ""
+
+    init() {
+        self.dismiss = nil
+    }
+    
+    init(url: URL, dismiss: @escaping () -> Void) {
+        self.dismiss = dismiss
+        self._url = State(initialValue: url)
+    }
 
     var body: some View {
         NavigationStack {
             Group {
                 if let pdf = pdf {
                     ScalablePdfView(pdf: pdf, dismiss: clear)
+                } else if url != nil {
+                    ProgressView()
                 } else {
                     PdfFilePicker(url: $url)
                 }
@@ -41,34 +53,41 @@ struct ContentView: View {
                     Label("About", systemImage: "ellipsis.circle")
                 }
             }
-            .onChange(of: url) {
-                guard let url = url else { return }
-                do {
-                    pdf = try ScalablePdf(url: url)
-                }
-                catch {
-                    errorMessage = error.localizedDescription
-                    showError = true
-                }
+            .onAppear {
+                loadPdf()
             }
-            .sheet(isPresented: $showAbout) {
-                AboutView(info: PdfPrintScalerInfo())
+            .onChange(of: url) {
+                loadPdf()
             }
             .alert("Error Opening File", isPresented: $showError) {
                 Button("OK") { clear() }
             } message: {
                 Text(errorMessage)
             }
+            .sheet(isPresented: $showAbout) {
+                AboutView(info: PdfPrintScalerInfo())
+            }
             .padding()
         }
     }
     
     func clear() {
-        url = nil
-        pdf = nil
+        if let dismiss = dismiss {
+            dismiss()
+        } else {
+            url = nil
+            pdf = nil
+        }
     }
-}
-
-#Preview {
-    ContentView()
+    
+    func loadPdf() {
+        guard let url = url else { return }
+        do {
+            pdf = try ScalablePdf(url: url)
+        }
+        catch {
+            errorMessage = error.localizedDescription
+            showError = true
+        }
+    }
 }
