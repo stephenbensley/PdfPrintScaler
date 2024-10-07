@@ -10,16 +10,16 @@ import SwiftUI
 // A control for selecting the scale factor.
 struct ScalePicker: View {
     @ScaledMetric(relativeTo: .body) private var maxWidth = 50.0
-    @Binding private var scale: Int
+    @Binding private var scalePct: Int
     
-    init(scale: Binding<Int>) {
-        self._scale = scale
+    init(scalePct: Binding<Int>) {
+        self._scalePct = scalePct
      }
     
     var body: some View {
         HStack {
             Text("Scale:")
-            TextField("Scale", value: $scale, format: .number)
+            TextField("Scale", value: $scalePct, format: .number)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
                 .textFieldStyle(.roundedBorder)
@@ -27,19 +27,19 @@ struct ScalePicker: View {
             Text("%")
                 .padding(.trailing)
             Stepper("Scale", onIncrement: {
-                    scale += 1
+                    scalePct += 1
                 }, onDecrement: {
-                    if scale > 0 { scale -= 1}
+                    if scalePct > 0 { scalePct -= 1}
                 })
             .labelsHidden()
         }
-        .onChange(of: scale) {
-            if scale < 1 { scale = 1 }
+        .onChange(of: scalePct) {
+            if scalePct < 1 { scalePct = 1 }
         }
     }
 }
 
 #Preview {
-    @Previewable @State var scale = 100
-    ScalePicker(scale: $scale)
+    @Previewable @State var scalePct = 100
+    ScalePicker(scalePct: $scalePct)
 }

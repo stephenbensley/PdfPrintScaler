@@ -10,21 +10,24 @@ import SwiftUI
 
 // Main view for the Scaled Print functionality -- shared between the app and the extension.
 struct ScalablePdfView: View {
-    @Bindable private var pdf: ScalablePdf
+    private let doc: PDFDocument
     private let printOnce: Bool
     private let dismiss: () -> Void
+    @State var scalePct: Int = 100
     @State private var showPrint = false
     
-    init(pdf: ScalablePdf, printOnce: Bool, dismiss: @escaping () -> Void) {
-        self.pdf = pdf
+    var scale: Double { Double(scalePct) / 100.0 }
+
+    init(doc: PDFDocument, printOnce: Bool, dismiss: @escaping () -> Void) {
+        self.doc = doc
         self.printOnce = printOnce
         self.dismiss = dismiss
     }
     
     var body: some View {
         VStack {
-            ScaledPdfView(pdf: pdf)
-            ScalePicker(scale: $pdf.scale)
+            ScaledPdfView(doc: doc, scale: scale)
+            ScalePicker(scalePct: $scalePct)
                 .padding(.bottom)
             HStack {
                 Spacer()
@@ -35,7 +38,7 @@ struct ScalablePdfView: View {
              }
         }
         .sheet(isPresented: $showPrint) {
-            PrintView(pdf: pdf, completion: printComplete)
+            PrintView(doc: doc, scale: scale, completion: printComplete)
                 .presentationDetents([.medium])
         }
         .padding()

@@ -5,21 +5,24 @@
 // license at https://github.com/stephenbensley/PdfPrintScaler/blob/main/LICENSE.
 //
 
+import PDFKit
 import SwiftUI
 
 // Displays progress of the scaling operation and presents system print dialog.
 struct PrintView: View {
-    private nonisolated(unsafe) var pdf: ScalablePdf
+    private let doc: PDFDocument
+    private let scale: Double
     private let completion: (Bool) -> Void
+    private let pageCount: Double
     @State private var progressText = "Preparing PDF to print…"
     @State private var scalingTask: Task<Data, Never>? = nil
     @State private var scaledCount = 0.0
-    private let pageCount: Double
-    
-    init(pdf: ScalablePdf, completion: @escaping (Bool) -> Void) {
-        self.pdf = pdf
+     
+    init(doc: PDFDocument, scale: Double, completion: @escaping (Bool) -> Void) {
+        self.doc = doc
+        self.scale = scale
         self.completion = completion
-        self.pageCount = Double(pdf.pageCount)
+        self.pageCount = Double(doc.pageCount)
     }
     
     var body: some View {
@@ -42,8 +45,9 @@ struct PrintView: View {
     }
     
     func scaleAndPrint() async {
-        let scalingTask = Task.detached {
-            pdf.scalePdf(pageComplete: pageComplete)
+        nonisolated(unsafe) let doc = doc
+        let scalingTask = Task.detached { @Sendable in
+            doc.scaleBy(scale, pageComplete: pageComplete)
         }
         self.scalingTask = scalingTask
         let scaled = await scalingTask.result

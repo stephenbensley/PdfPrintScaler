@@ -5,6 +5,7 @@
 // license at https://github.com/stephenbensley/PdfPrintScaler/blob/main/LICENSE.
 //
 
+import PDFKit
 import SwiftUI
 import UtiliKit
 
@@ -12,17 +13,19 @@ import UtiliKit
 // dimensions are preserved. If scaleFactor > 1.0, some of the page will be cropped. If
 // scaleFactor < 1.0, whitespace will be added.
 struct ScaledPdfView: View {
-    private let pdf: ScalablePdf
+    private let doc: PDFDocument
+    private let scale: Double
  
-    init(pdf: ScalablePdf) {
-        self.pdf = pdf
+    init(doc: PDFDocument, scale: Double) {
+        self.doc = doc
+        self.scale = scale
     }
     
     var body: some View {
         GeometryReader { proxy in
             ScrollView(.horizontal) {
                 LazyHStack {
-                    ForEach(pdf.doc, id: \.self) { page in
+                    ForEach(doc, id: \.self) { page in
                         // Render the page in lower res for preview
                         let image = page.uiImage(dpi: 100.0)
                         // Aspect ratio must be preserved.
@@ -30,8 +33,8 @@ struct ScaledPdfView: View {
                         // Make page preview as large as possible.
                         let pageFrame = proxy.size.shrinkToAspectRatio(aspectRatio)
                         // Scale the page content relative to the page frame.
-                        let contentFrame = pageFrame.scaled(by: pdf.scaleFactor)
-                        Image(uiImage: page.uiImage(dpi: 150.0))
+                        let contentFrame = pageFrame.scaled(by: scale)
+                        Image(uiImage: image)
                             .resizable()
                             .scaledToFit()
                             .frame(size: contentFrame)

@@ -5,8 +5,23 @@
 // license at https://github.com/stephenbensley/PdfPrintScaler/blob/main/LICENSE.
 //
 
+import PDFKit
 import SwiftUI
 import UtiliKit
+
+enum PdfError: LocalizedError {
+    case invalidData
+    case emptyFile
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidData:
+            "Data in PDF file is invalid or corrupt."
+        case .emptyFile:
+            "PDF file does not contain any pages."
+        }
+    }
+}
 
 struct PdfPrintScalerInfo: AboutInfo {
     let appStoreId: Int = 6575389687
@@ -20,7 +35,7 @@ struct ContentView: View {
     private let printOnce: Bool
     private let dismiss: (() -> Void)?
     @State private var url: URL?
-    @State private var pdf: ScalablePdf? = nil
+    @State private var doc: PDFDocument? = nil
     @State private var showAbout = false
     @State private var showError = false
     @State private var errorMessage = ""
@@ -39,8 +54,8 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if let pdf = pdf {
-                    ScalablePdfView(pdf: pdf, printOnce: printOnce, dismiss: clear)
+                if let doc = doc {
+                    ScalablePdfView(doc: doc, printOnce: printOnce, dismiss: clear)
                 } else if url != nil {
                     ProgressView()
                 } else {
@@ -79,14 +94,17 @@ struct ContentView: View {
             dismiss()
         } else {
             url = nil
-            pdf = nil
+            doc = nil
         }
     }
     
     func loadPdf() {
         guard let url = url else { return }
         do {
-            pdf = try ScalablePdf(url: url)
+            let data = try Data(contentsOf: url)
+            guard let doc = PDFDocument(data: data) else { throw PdfError.invalidData }
+            guard doc.pageCount > 0 else { throw PdfError.emptyFile }
+            self.doc = doc
         }
         catch {
             errorMessage = error.localizedDescription
