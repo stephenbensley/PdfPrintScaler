@@ -17,7 +17,7 @@ struct ScalablePdfView: View {
     @State private var showPrint = false
     
     var scale: Double { Double(scalePct) / 100.0 }
-
+    
     init(doc: PDFDocument, printOnce: Bool, dismiss: @escaping () -> Void) {
         self.doc = doc
         self.printOnce = printOnce
@@ -35,11 +35,12 @@ struct ScalablePdfView: View {
                 Spacer()
                 Button("Print") { showPrint = true }
                 Spacer()
-             }
+            }
         }
         .sheet(isPresented: $showPrint) {
             PrintView(doc: doc, scale: scale, completion: printComplete)
                 .presentationDetents([.medium])
+                .interactiveDismissDisabled()
         }
         .padding()
     }
