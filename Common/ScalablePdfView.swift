@@ -12,7 +12,6 @@ import SwiftUI
 struct ScalablePdfView: View {
     @Bindable private var pdf: ScalablePdf
     private let dismiss: () -> Void
-    @ScaledMetric(relativeTo: .body) private var buttonWidth = 70.0
     @State private var showPrint = false
     
     init(pdf: ScalablePdf, dismiss: @escaping () -> Void) {
@@ -24,23 +23,14 @@ struct ScalablePdfView: View {
         VStack {
             ScaledPdfView(pdf: pdf)
             ScalePicker(scale: $pdf.scale)
+                .padding(.bottom)
             HStack {
                 Spacer()
-                Button(action: {
-                        dismiss()
-                 }, label: {
-                    Text("Cancel")
-                        .frame(width: buttonWidth)
-                })
-                .buttonStyle(.bordered)
-                Button(action: {
-                    showPrint = true
-                }, label: {
-                    Text("Print")
-                        .frame(width: buttonWidth)
-                })
-                .buttonStyle(.borderedProminent)
-            }
+                Button("Cancel") { dismiss() }
+                Spacer()
+                Button("Print") { showPrint = true }
+                Spacer()
+             }
         }
         .sheet(isPresented: $showPrint) {
             PrintView(pdf: pdf, dismiss: { showPrint = false })

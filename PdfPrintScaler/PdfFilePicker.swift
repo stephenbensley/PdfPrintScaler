@@ -15,34 +15,27 @@ struct PdfFilePicker: View {
     @State private var showFilePicker = false
     @State private var errorMessage = ""
     @State private var showError = false
-    // User letter-sized aspect ratio for the placeholder frame.
-    private let aspectRatio: CGFloat = 8.5/11.0
     
     init(url: Binding<URL?>) {
         self._url = url
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            Button("Select PDF file…") { showFilePicker = true }
-                .frame(size: proxy.size)
-                .border(Color.red)
-        }
-        .aspectRatio(aspectRatio, contentMode: .fit)
-        .fileImporter(isPresented: $showFilePicker, allowedContentTypes: [.pdf]) { result in
-            switch result {
-            case .success(let url):
-                self.url = url
-            case .failure(let error):
-                errorMessage = error.localizedDescription
-                showError = true
+        Button("Select PDF file…") { showFilePicker = true }
+            .fileImporter(isPresented: $showFilePicker, allowedContentTypes: [.pdf]) { result in
+                switch result {
+                case .success(let url):
+                    self.url = url
+                case .failure(let error):
+                    errorMessage = error.localizedDescription
+                    showError = true
+                }
             }
-        }
-        .alert("Error Selecting File", isPresented: $showError) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(errorMessage)
-        }
+            .alert("Error Selecting File", isPresented: $showError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
     }
 }
 
