@@ -9,21 +9,32 @@ import SwiftUI
 
 // A control for selecting the scale factor.
 struct ScalePicker: View {
-    @ScaledMetric(relativeTo: .body) private var maxWidth = 225.0
+    @ScaledMetric(relativeTo: .body) private var maxWidth = 50.0
     @Binding private var scale: Int
-
+    
     init(scale: Binding<Int>) {
         self._scale = scale
-    }
-
+     }
+    
     var body: some View {
         HStack {
-            Stepper(
-                "Scale \(scale)",
-                value: $scale,
-                in: 1...500
-            )
-            .frame(maxWidth: maxWidth)
+            Text("Scale:")
+            TextField("Scale", value: $scale, format: .number)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .textFieldStyle(.roundedBorder)
+                .frame(maxWidth: maxWidth)
+            Text("%")
+                .padding(.trailing)
+            Stepper("Scale", onIncrement: {
+                    scale += 1
+                }, onDecrement: {
+                    if scale > 0 { scale -= 1}
+                })
+            .labelsHidden()
+        }
+        .onChange(of: scale) {
+            if scale < 1 { scale = 1 }
         }
     }
 }
