@@ -17,6 +17,7 @@ struct PdfPrintScalerInfo: AboutInfo {
 }
 
 struct ContentView: View {
+    private let printOnce: Bool
     private let dismiss: (() -> Void)?
     @State private var url: URL?
     @State private var pdf: ScalablePdf? = nil
@@ -25,10 +26,12 @@ struct ContentView: View {
     @State private var errorMessage = ""
 
     init() {
+        self.printOnce = false
         self.dismiss = nil
     }
     
     init(url: URL, dismiss: @escaping () -> Void) {
+        self.printOnce = true
         self.dismiss = dismiss
         self._url = State(initialValue: url)
     }
@@ -37,7 +40,7 @@ struct ContentView: View {
         NavigationStack {
             Group {
                 if let pdf = pdf {
-                    ScalablePdfView(pdf: pdf, dismiss: clear)
+                    ScalablePdfView(pdf: pdf, printOnce: printOnce, dismiss: clear)
                 } else if url != nil {
                     ProgressView()
                 } else {

@@ -10,15 +10,15 @@ import SwiftUI
 // Displays progress of the scaling operation and presents system print dialog.
 struct PrintView: View {
     private nonisolated(unsafe) var pdf: ScalablePdf
-    private let dismiss: () -> Void
+    private let completion: (Bool) -> Void
     @State private var progressText = "Preparing PDF to print…"
     @State private var scalingTask: Task<Data, Never>? = nil
     @State private var scaledCount = 0.0
     private let pageCount: Double
     
-    init(pdf: ScalablePdf, dismiss: @escaping () -> Void) {
+    init(pdf: ScalablePdf, completion: @escaping (Bool) -> Void) {
         self.pdf = pdf
-        self.dismiss = dismiss
+        self.completion = completion
         self.pageCount = Double(pdf.pageCount)
     }
     
@@ -31,22 +31,27 @@ struct PrintView: View {
             }
             Button("Cancel") {
                 scalingTask?.cancel()
-                dismiss()
+                completion(false)
             }
             .padding(.top)
         }
         .padding(40)
         .task {
-            let scalingTask = Task.detached {
-                pdf.scalePdf(pageComplete: pageComplete)
-            }
-            self.scalingTask = scalingTask
-            let scaled = await scalingTask.result
-            if !scalingTask.isCancelled {
-                progressText = "Printing PDF…"
-                await Self.printData(data: scaled.get())
-            }
-            dismiss()
+            await scaleAndPrint()
+         }
+    }
+    
+    func scaleAndPrint() async {
+        let scalingTask = Task.detached {
+            pdf.scalePdf(pageComplete: pageComplete)
+        }
+        self.scalingTask = scalingTask
+        let scaled = await scalingTask.result
+        if scalingTask.isCancelled {
+            completion(false)
+        } else {
+            progressText = "Printing PDF…"
+            completion(await Self.printData(data: scaled.get()))
         }
     }
     
@@ -56,7 +61,7 @@ struct PrintView: View {
         }
     }
     
-    static private func printData(data: Data) async {
+    static private func printData(data: Data) async -> Bool {
         let printInfo = UIPrintInfo(dictionary: nil)
         printInfo.outputType = .general
         
@@ -64,9 +69,9 @@ struct PrintView: View {
         printController.printInfo = printInfo
         printController.printingItem = data
         
-        await withCheckedContinuation { continuation in
-            printController.present(animated: true) { _, _, _ in
-                continuation.resume()
+        return await withCheckedContinuation { continuation in
+            printController.present(animated: true) { _, completed, _ in
+                continuation.resume(returning: completed)
             }
         }
     }
