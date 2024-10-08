@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DC1889D82CA39CBF007C20C2 /* PrintScaled.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DC1889C92CA39CBF007C20C2 /* PrintScaled.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DCA7B8342CB5AA5700EB236C /* Sample.pdf in Resources */ = {isa = PBXBuildFile; fileRef = DCA7B8312CB5A96900EB236C /* Sample.pdf */; };
 		DCD4B9DD2CA8A4A800A506AC /* UtiliKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCD4B9DC2CA8A4A800A506AC /* UtiliKit */; };
 		DCE401CB2CACD08E00A8D592 /* UtiliKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCE401CA2CACD08E00A8D592 /* UtiliKit */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 /* Begin PBXFileReference section */
 		DC1889B42CA39C9E007C20C2 /* PDF Print Scaler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PDF Print Scaler.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC1889C92CA39CBF007C20C2 /* PrintScaled.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PrintScaled.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCA7B8312CB5A96900EB236C /* Sample.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Sample.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -116,6 +118,7 @@
 		DC188A012CA3A308007C20C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DCA7B8312CB5A96900EB236C /* Sample.pdf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCA7B8342CB5AA5700EB236C /* Sample.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +396,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = Resources/Sample.pdf;
 				DEVELOPMENT_TEAM = 6X2P4HJBQW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -419,6 +424,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = Resources/Sample.pdf;
 				DEVELOPMENT_TEAM = 6X2P4HJBQW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

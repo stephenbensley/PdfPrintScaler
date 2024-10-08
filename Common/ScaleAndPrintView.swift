@@ -89,3 +89,7 @@ struct ScaleAndPrintView: View {
         }
     }
 }
+
+#Preview {
+    ScaleAndPrintView(doc: Sample.doc, scale: 1.0, completion: { _ in })
+}

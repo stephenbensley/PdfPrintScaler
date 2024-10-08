@@ -50,3 +50,6 @@ struct ScaledPdfView: View {
     }
 }
 
+#Preview {
+    ScaledPdfView(doc: Sample.doc, scale: 1.0)
+}

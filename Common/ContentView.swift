@@ -112,3 +112,7 @@ struct ContentView: View {
         }
     }
 }
+
+#Preview {
+    ContentView(url: Sample.url, dismiss: { })
+}

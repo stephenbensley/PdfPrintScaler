@@ -50,3 +50,7 @@ struct ProcessPdfView: View {
         if printOnce && completed { dismiss() }
     }
 }
+
+#Preview {
+    ProcessPdfView(doc: Sample.doc, printOnce: false, dismiss: { })
+}
