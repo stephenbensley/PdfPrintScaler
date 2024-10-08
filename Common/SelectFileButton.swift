@@ -7,10 +7,9 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
-import UtiliKit
 
-// Allows the user to pick a PDF file for processing.
-struct PdfFilePicker: View {
+// Prompts the user to select a PDF file for processing.
+struct SelectFileButton: View {
     @Binding private var url: URL?
     @State private var showFilePicker = false
     @State private var errorMessage = ""
@@ -32,7 +31,7 @@ struct PdfFilePicker: View {
                 }
             }
             .alert("Error Selecting File", isPresented: $showError) {
-                Button("OK", role: .cancel) { }
+                Button("OK") { }
             } message: {
                 Text(errorMessage)
             }
@@ -41,5 +40,5 @@ struct PdfFilePicker: View {
 
 #Preview {
     @Previewable @State var url: URL? = nil
-    PdfFilePicker(url: $url)
+    SelectFileButton(url: $url)
 }

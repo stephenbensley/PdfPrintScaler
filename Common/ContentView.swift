@@ -55,11 +55,11 @@ struct ContentView: View {
         NavigationStack {
             Group {
                 if let doc = doc {
-                    ScalablePdfView(doc: doc, printOnce: printOnce, dismiss: clear)
+                    ProcessPdfView(doc: doc, printOnce: printOnce, dismiss: clear)
                 } else if url != nil {
                     ProgressView()
                 } else {
-                    PdfFilePicker(url: $url)
+                    SelectFileButton(url: $url)
                 }
             }
             .navigationTitle("PDF Print Scaler")

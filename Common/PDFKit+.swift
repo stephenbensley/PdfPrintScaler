@@ -31,7 +31,9 @@ public extension PDFPage {
 
 public extension PDFDocument {
     // Scales each page in the document by the given scale factor. Page size remains unchanged,
-    // only the content is scaled.
+    // only the content is scaled. The pageComplete closure is invoked to report progress. The
+    // function is cancellable; in which case, it returns a partial document with only the pages
+    // scaled so far.
     func scaleBy(
         _ scaleFactor: CGFloat,
         dpi: CGFloat = 300.0,
@@ -68,6 +70,7 @@ public extension PDFDocument {
     }
 }
 
+// Extend PDFDocument to support RandomAcessCollection. Useful for iterating through all the pages.
 extension PDFDocument: @retroactive RandomAccessCollection {
     public typealias Index = Int
     public typealias Element = PDFPage

@@ -8,8 +8,8 @@
 import PDFKit
 import SwiftUI
 
-// Main view for the Scaled Print functionality -- shared between the app and the extension.
-struct ScalablePdfView: View {
+// Main view for operating on a PDF after it has been loaded.
+struct ProcessPdfView: View {
     private let doc: PDFDocument
     private let printOnce: Bool
     private let dismiss: () -> Void
@@ -38,7 +38,7 @@ struct ScalablePdfView: View {
             }
         }
         .sheet(isPresented: $showPrint) {
-            PrintView(doc: doc, scale: scale, completion: printComplete)
+            ScaleAndPrintView(doc: doc, scale: scale, completion: printComplete)
                 .presentationDetents([.medium])
                 .interactiveDismissDisabled()
         }
