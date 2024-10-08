@@ -39,6 +39,7 @@ struct ScaledPdfView: View {
                             .scaledToFit()
                             .frame(size: contentFrame)
                             .frame(size: pageFrame)
+                            .background(.white)
                             .clipped()
                             .border(Color.red)
                     }
