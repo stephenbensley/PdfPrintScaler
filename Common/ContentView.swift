@@ -13,6 +13,7 @@ enum PdfError: LocalizedError {
     case accessDenied
     case invalidData
     case emptyFile
+    case unexpected
     
     var errorDescription: String? {
         switch self {
@@ -22,6 +23,8 @@ enum PdfError: LocalizedError {
             "Data in PDF file is invalid or corrupt."
         case .emptyFile:
             "PDF file does not contain any pages."
+        case .unexpected:
+            "An unexpected error occurred."
         }
     }
 }
@@ -105,7 +108,7 @@ struct ContentView: View {
         guard let url = url else { return }
         Task {
             do {
-                let data = try await Self.loadFile(from: url)
+                let data = try await Self.readData(from: url)
                 guard let doc = PDFDocument(data: data) else { throw PdfError.invalidData }
                 guard doc.pageCount > 0 else { throw PdfError.emptyFile }
                 self.doc = doc
@@ -116,7 +119,7 @@ struct ContentView: View {
         }
     }
     
-    static func loadFile(from url: URL) async throws -> Data {
+    static func readData(from url: URL) async throws -> Data {
         // Read data in a detached task because NSFileCoordinator.coordinate can block.
         let task = Task.detached {
             guard url.startAccessingSecurityScopedResource() else { throw PdfError.accessDenied }
@@ -138,7 +141,7 @@ struct ContentView: View {
             }
             if let innerError = innerError { throw innerError }
             if let outerError = outerError { throw outerError }
-            guard let data = data else { throw PdfError.invalidData }
+            guard let data = data else { throw PdfError.unexpected }
             return data
         }
         return try await task.value

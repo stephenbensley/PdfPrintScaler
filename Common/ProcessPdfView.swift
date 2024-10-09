@@ -26,7 +26,7 @@ struct ProcessPdfView: View {
     
     var body: some View {
         VStack {
-            ScaledPdfView(doc: doc, scale: scale)
+            ScaledDocView(doc: doc, scale: scale)
             ScalePicker(scalePct: $scalePct)
                 .padding(.bottom)
             HStack {
