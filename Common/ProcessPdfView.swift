@@ -10,12 +10,18 @@ import SwiftUI
 
 // Main view for operating on a PDF after it has been loaded.
 struct ProcessPdfView: View {
+    // Document being processed.
     private let doc: PDFDocument
+    // True if the user is only allowed to print the document once before.
     private let printOnce: Bool
+    // Used to dismiss the view.
     private let dismiss: () -> Void
+    // Current scale percentage.
     @State var scalePct: Int = 100
+    // Trigger the print dialog.
     @State private var showPrint = false
     
+    // Converts scale percentage to a 1.0-based scale factor.
     var scale: Double { Double(scalePct) / 100.0 }
     
     init(doc: PDFDocument, printOnce: Bool, dismiss: @escaping () -> Void) {

@@ -10,12 +10,16 @@ import SwiftUI
 
 // Displays progress of the scaling operation and presents the system print dialog.
 struct ScaleAndPrintView: View {
+    // Document being printed
     private let doc: PDFDocument
+    // Scale factor.
     private let scale: Double
     // Invoked when the operation is complete. The Bool parameter indicates whether or not a print
     // job was successfully submitted.
     private let completion: (Bool) -> Void
+    // Number of pages in the doc.
     private let pageCount: Double
+    // Progress text displayed to the user.
     @State private var progressText = "Preparing PDF to print…"
     // Detached task used to scale the Pdf.
     @State private var scaleTask: Task<Data, Never>? = nil

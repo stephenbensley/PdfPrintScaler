@@ -9,6 +9,8 @@ import PDFKit
 import SwiftUI
 import UtiliKit
 
+// Exceptions thrown during PDF processing. These are in addition to any system errors that may
+// occur.
 enum PdfError: LocalizedError {
     case accessDenied
     case invalidData
@@ -29,6 +31,7 @@ enum PdfError: LocalizedError {
     }
 }
 
+// App details used to populate About page.
 struct PdfPrintScalerInfo: AboutInfo {
     let appStoreId: Int = 6575389687
     let copyright: String = "© 2024 Stephen E. Bensley"
@@ -37,20 +40,30 @@ struct PdfPrintScalerInfo: AboutInfo {
     let gitHubRepo: String = "PdfPrintScaler"
 }
 
+// Main content view shared between the app and the action extension.
 struct ContentView: View {
+    // True if the user is only allowed to print one document, one time before the view exits. This
+    // is set to true when the view is loaded from an action extension.
     private let printOnce: Bool
+    // Used to dismiss the view.
     private let dismiss: (() -> Void)?
+    // URL being processed, nil if user hasn't selected a file yet.
     @State private var url: URL?
+    // Document being processed, nil if file hasn't been loaded yet.
     @State private var doc: PDFDocument? = nil
+    // Trigger the about page
     @State private var showAbout = false
+    // Trigger the error alert.
     @State private var showError = false
     @State private var errorMessage = ""
     
+    // Init invoked by app.
     init() {
         self.printOnce = false
         self.dismiss = nil
     }
     
+    // Init invoked by action extension.
     init(url: URL, dismiss: @escaping () -> Void) {
         self.printOnce = true
         self.dismiss = dismiss
@@ -61,10 +74,13 @@ struct ContentView: View {
         NavigationStack {
             Group {
                 if let doc = doc {
+                    // We've successfully loaded a document, so process it.
                     ProcessPdfView(doc: doc, printOnce: printOnce, dismiss: clear)
                 } else if url != nil {
+                    // We have an URL, but no doc, so we must be loading it in the background.
                     ProgressView("Reading file contents…")
                 } else {
+                    // We don't even have an url, so prompt the user to select one.
                     SelectFileButton(url: $url)
                 }
             }
@@ -77,12 +93,8 @@ struct ContentView: View {
                     Label("About", systemImage: "ellipsis.circle")
                 }
             }
-            .onAppear {
-                loadPdf()
-            }
-            .onChange(of: url) {
-                loadPdf()
-            }
+            .onAppear { loadPdf() }
+            .onChange(of: url) { loadPdf() }
             .alert("Error Opening File", isPresented: $showError) {
                 Button("OK") { clear() }
             } message: {
@@ -95,6 +107,8 @@ struct ContentView: View {
         }
     }
     
+    // Clear the current URL. If this is the action extension, we dismiss the view (they only get
+    // one chance). If this is the app, clear our state, so the user can pick a new file.
     func clear() {
         if let dismiss = dismiss {
             dismiss()
@@ -104,8 +118,11 @@ struct ContentView: View {
         }
     }
     
+    // Loads the PDF in the background.
     func loadPdf() {
+        // If we don't have an URL there's nothing to do.
         guard let url = url else { return }
+        // Use a task, so we don't stall the UI.
         Task {
             do {
                 let data = try await Self.readData(from: url)
@@ -119,12 +136,15 @@ struct ContentView: View {
         }
     }
     
+    // Asynchronously reads data from an URL
     static func readData(from url: URL) async throws -> Data {
         // Read data in a detached task because NSFileCoordinator.coordinate can block.
         let task = Task.detached {
+            // If we don't call this, remote file access (e.g., Google Drive) will fail.
             guard url.startAccessingSecurityScopedResource() else { throw PdfError.accessDenied }
             defer { url.stopAccessingSecurityScopedResource() }
             
+            // Use NSFileCoordinator since cloud-based files may need to be downloaded first.
             var outerError: NSError? = nil
             var innerError: Error? = nil
             var data: Data? = nil

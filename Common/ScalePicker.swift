@@ -9,6 +9,7 @@ import SwiftUI
 
 // A control for selecting the scale factor.
 struct ScalePicker: View {
+    // Width of text field needs to vary with font size.
     @ScaledMetric(relativeTo: .body) private var maxWidth = 50.0
     @Binding private var scalePct: Int
     

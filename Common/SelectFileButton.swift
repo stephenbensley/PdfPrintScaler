@@ -10,8 +10,11 @@ import UniformTypeIdentifiers
 
 // Prompts the user to select a PDF file for processing.
 struct SelectFileButton: View {
+    // URL of selected file.
     @Binding private var url: URL?
+    // Trigger system file picker
     @State private var showFilePicker = false
+    // Trigger error alert
     @State private var errorMessage = ""
     @State private var showError = false
     

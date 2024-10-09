@@ -7,14 +7,23 @@
 
 import PDFKit
 import SwiftUI
+import UtiliKit
 
 // Presents a preview of a scaled page.
 struct ScaledPageView: View {
+    // Page being viewed.
     private let page: PDFPage
+    // Scale factor.
     private let scale: Double
+    // Maximum size available to the page. The page will center itself in this frame.
     private let maxSize: CGSize
+    // Size of the page. This is the largest possible frame that will fit in maxSize while
+    // preserving the page's aspect ratio.
     private let pageFrame: CGSize
+    // Scaled page content. Scale is relative to pageFrame.
     private let contentFrame: CGSize
+    // Image representation of the PDFPage. This is rendered in the background since it can take a
+    // while for large or complex documents.
     @State private var image: UIImage? = nil
     
     init(page: PDFPage, scale: Double, maxSize: CGSize) {
@@ -42,9 +51,7 @@ struct ScaledPageView: View {
         .clipped()
         .border(Color.red)
         .frame(size: maxSize)
-        .onAppear {
-            convertPage()
-        }
+        .onAppear { convertPage() }
     }
     
     func convertPage() {
@@ -67,4 +74,3 @@ struct ScaledPageView: View {
         maxSize: .init(width: 300.0, height: 500.0)
     )
 }
-
