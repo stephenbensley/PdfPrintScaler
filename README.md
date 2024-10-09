@@ -26,7 +26,7 @@ The app was developed with [Xcode](https://developer.apple.com/xcode/), which is
 
 ### Dependencies
 
-The app depends on one Swift Packages (developed by me): [UtiliKit](https://github.com/stephenbensley/UtiliKit). This should be resolved automatically when you open and build the project.
+The app depends on a [Swift Package](https://www.swift.org/packages/): [UtiliKit](https://github.com/stephenbensley/UtiliKit) (also developed by me). This dependency should be resolved automatically when you open and build the project.
 
 ### Targets
 
