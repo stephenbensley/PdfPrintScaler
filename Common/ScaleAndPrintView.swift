@@ -40,6 +40,7 @@ struct ScaleAndPrintView: View {
                 ProgressView(progressText)
             } else {
                 ProgressView(progressText, value: scaledCount, total: pageCount)
+                    .padding()
             }
             Button("Cancel") {
                 scaleTask?.cancel()
@@ -47,6 +48,7 @@ struct ScaleAndPrintView: View {
             }
             .padding(.top)
         }
+        .padding()
         .task {
             await scaleAndPrint()
          }

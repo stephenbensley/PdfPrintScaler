@@ -19,8 +19,10 @@ public extension PDFPage {
             height: (pageSize.height * dpi) / ppi
         )
         
-        // Y coordinates are reversed between PDF and UIImage
-        return UIGraphicsImageRenderer(size: imageSize).image { context in
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1.0
+        return UIGraphicsImageRenderer(size: imageSize, format: format).image { context in
+            // Y coordinates are reversed between PDF and UIImage
             context.cgContext.translateBy(x: 0.0, y: imageSize.height)
             let scaleBy = dpi / ppi
             context.cgContext.scaleBy(x: scaleBy, y: -scaleBy)
