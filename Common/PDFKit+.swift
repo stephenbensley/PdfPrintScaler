@@ -29,46 +29,49 @@ public extension PDFPage {
             self.draw(with: .mediaBox, to: context.cgContext)
         }
     }
+    
+    // Scales the page by the given scale factor. Page size remains unchanged, only the content is
+    // scaled.
+    func scaleBy(_ scaleFactor: CGFloat, dpi: CGFloat = 300.0) -> PDFPage {
+        let bounds = bounds(for: .mediaBox)
+        let data = UIGraphicsPDFRenderer(bounds: bounds).pdfData { context in
+            let pageSize = bounds.size
+            let image = uiImage(dpi: dpi)
+            let originScale = 0.5 * (1.0 - scaleFactor)
+            let imageOrigin = CGPoint(
+                x: pageSize.width  * originScale,
+                y: pageSize.height * originScale
+            )
+            let imageSize = CGSize(
+                width:  pageSize.width  * scaleFactor,
+                height: pageSize.height * scaleFactor
+            )
+            context.beginPage()
+            image.draw(in: .init(origin: imageOrigin, size: imageSize))
+        }
+        
+        // We just created the PDF, so we know it exists and has a page.
+        return PDFDocument(data: data)!.page(at: 0)!
+    }
 }
 
 public extension PDFDocument {
-    // Scales each page in the document by the given scale factor. Page size remains unchanged,
-    // only the content is scaled. The pageComplete closure is invoked to report progress. The
-    // function is cancellable; in which case, it returns a partial document with only the pages
-    // scaled so far.
+    // Scales each page in the document by the given scale factor. The pageComplete closure is
+    // invoked to report progress. The function is cancellable; in which case, it returns a partial
+    // document with only the pages scaled so far.
     func scaleBy(
         _ scaleFactor: CGFloat,
         dpi: CGFloat = 300.0,
         pageComplete: (Int) -> Void = { _ in }
     ) -> Data {
-        // PDF coordinates are in points with 72 points per inch.
-        let ppi = 72.0
-        // Letter-sized rectangle.
-        let letter = CGRect(x: 0.0, y: 0.0, width: 8.5 * ppi, height: 11.0 * ppi)
-        
-        // Use the first page as the bounds for the renderer -- or just default to letter.
-        let bounds = self.page(at: 0)?.bounds(for: .mediaBox) ?? letter
-        
-        return UIGraphicsPDFRenderer(bounds: bounds).pdfData { context in
-            for i in 0..<self.pageCount {
-                guard !Task.isCancelled else { break }
-                guard let page = self.page(at: i) else { continue }
-                let pageSize = page.bounds(for: .mediaBox).size
-                let image = page.uiImage(dpi: dpi)
-                let originScale = 0.5 * (1.0 - scaleFactor)
-                let imageOrigin = CGPoint(
-                    x: pageSize.width  * originScale,
-                    y: pageSize.height * originScale
-                )
-                let imageSize = CGSize(
-                    width:  pageSize.width  * scaleFactor,
-                    height: pageSize.height * scaleFactor
-                )
-                context.beginPage(withBounds: page.bounds(for: .mediaBox), pageInfo: .init())
-                image.draw(in: .init(origin: imageOrigin, size: imageSize))
-                pageComplete(i + 1)
-            }
+        let doc = PDFDocument()
+        for page in self {
+            let scaled = page.scaleBy(scaleFactor)
+            doc.insert(scaled, at: doc.pageCount)
+            pageComplete(doc.pageCount)
+            if Task.isCancelled { break }
         }
+        return doc.dataRepresentation()!
     }
 }
 
