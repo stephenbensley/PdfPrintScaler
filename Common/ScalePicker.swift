@@ -11,28 +11,37 @@ import SwiftUI
 struct ScalePicker: View {
     // Width of text field needs to vary with font size.
     @ScaledMetric(relativeTo: .body) private var maxWidth = 50.0
+    // Value being configured
     @Binding private var scalePct: Int
+    // Used to hide keypad
+    @FocusState private var textIsFocused: Bool
     
     init(scalePct: Binding<Int>) {
         self._scalePct = scalePct
-     }
+    }
     
     var body: some View {
         HStack {
             Text("Scale:")
             TextField("Scale", value: $scalePct, format: .number)
-                .keyboardType(.decimalPad)
+                .keyboardType(.numberPad)
                 .multilineTextAlignment(.trailing)
+                .focused($textIsFocused)
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: maxWidth)
             Text("%")
                 .padding(.trailing)
             Stepper("Scale", onIncrement: {
-                    scalePct += 1
-                }, onDecrement: {
-                    if scalePct > 0 { scalePct -= 1}
-                })
+                scalePct += 1
+            }, onDecrement: {
+                if scalePct > 0 { scalePct -= 1}
+             })
             .labelsHidden()
+        }
+        .toolbar {
+            ToolbarItem(placement: .keyboard) {
+                Button("Hide Keypad") { textIsFocused = false }
+            }
         }
         .onChange(of: scalePct) {
             if scalePct < 1 { scalePct = 1 }
