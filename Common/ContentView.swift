@@ -10,11 +10,14 @@ import SwiftUI
 import UtiliKit
 
 enum PdfError: LocalizedError {
+    case accessDenied
     case invalidData
     case emptyFile
     
     var errorDescription: String? {
         switch self {
+        case .accessDenied:
+            "The file couldn't be opened because you don't have permission to view it."
         case .invalidData:
             "Data in PDF file is invalid or corrupt."
         case .emptyFile:
@@ -39,7 +42,7 @@ struct ContentView: View {
     @State private var showAbout = false
     @State private var showError = false
     @State private var errorMessage = ""
-
+    
     init() {
         self.printOnce = false
         self.dismiss = nil
@@ -50,7 +53,7 @@ struct ContentView: View {
         self.dismiss = dismiss
         self._url = State(initialValue: url)
     }
-
+    
     var body: some View {
         NavigationStack {
             Group {
@@ -67,7 +70,7 @@ struct ContentView: View {
             .toolbar {
                 Button {
                     showAbout = true
-                 } label: {
+                } label: {
                     Label("About", systemImage: "ellipsis.circle")
                 }
             }
@@ -100,16 +103,45 @@ struct ContentView: View {
     
     func loadPdf() {
         guard let url = url else { return }
-        do {
-            let data = try Data(contentsOf: url)
-            guard let doc = PDFDocument(data: data) else { throw PdfError.invalidData }
-            guard doc.pageCount > 0 else { throw PdfError.emptyFile }
-            self.doc = doc
+        Task {
+            do {
+                let data = try await Self.loadFile(from: url)
+                guard let doc = PDFDocument(data: data) else { throw PdfError.invalidData }
+                guard doc.pageCount > 0 else { throw PdfError.emptyFile }
+                self.doc = doc
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
+            }
         }
-        catch {
-            errorMessage = error.localizedDescription
-            showError = true
+    }
+    
+    static func loadFile(from url: URL) async throws -> Data {
+        // Read data in a detached task because NSFileCoordinator.coordinate can block.
+        let task = Task.detached {
+            guard url.startAccessingSecurityScopedResource() else { throw PdfError.accessDenied }
+            defer { url.stopAccessingSecurityScopedResource() }
+            
+            var outerError: NSError? = nil
+            var innerError: Error? = nil
+            var data: Data? = nil
+            NSFileCoordinator().coordinate(
+                readingItemAt: url,
+                options: .withoutChanges,
+                error: &outerError
+            ) { url in
+                do {
+                    data = try Data(contentsOf: url)
+                } catch {
+                    innerError = error
+                }
+            }
+            if let innerError = innerError { throw innerError }
+            if let outerError = outerError { throw outerError }
+            guard let data = data else { throw PdfError.invalidData }
+            return data
         }
+        return try await task.value
     }
 }
 
