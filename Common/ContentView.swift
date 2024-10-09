@@ -63,7 +63,7 @@ struct ContentView: View {
                 if let doc = doc {
                     ProcessPdfView(doc: doc, printOnce: printOnce, dismiss: clear)
                 } else if url != nil {
-                    ProgressView()
+                    ProgressView("Reading file contents…")
                 } else {
                     SelectFileButton(url: $url)
                 }

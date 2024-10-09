@@ -12,6 +12,7 @@ import SwiftUI
 struct ScaledPageView: View {
     private let page: PDFPage
     private let scale: Double
+    private let maxSize: CGSize
     private let pageFrame: CGSize
     private let contentFrame: CGSize
     @State private var image: UIImage? = nil
@@ -19,6 +20,7 @@ struct ScaledPageView: View {
     init(page: PDFPage, scale: Double, maxSize: CGSize) {
         self.page = page
         self.scale = scale
+        self.maxSize = maxSize
         let aspectRatio = page.bounds(for: .mediaBox).size.aspectRatio
         self.pageFrame = maxSize.shrinkToAspectRatio(aspectRatio)
         self.contentFrame = pageFrame.scaled(by: scale)
@@ -39,6 +41,7 @@ struct ScaledPageView: View {
         .background(.white)
         .clipped()
         .border(Color.red)
+        .frame(size: maxSize)
         .onAppear {
             convertPage()
         }

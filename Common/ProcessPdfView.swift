@@ -27,13 +27,16 @@ struct ProcessPdfView: View {
     var body: some View {
         VStack {
             ScaledDocView(doc: doc, scale: scale)
-            ScalePicker(scalePct: $scalePct)
+                .padding(.bottom)
+           ScalePicker(scalePct: $scalePct)
                 .padding(.bottom)
             HStack {
+                Spacer()
                 Spacer()
                 Button("Cancel") { dismiss() }
                 Spacer()
                 Button("Print") { showPrint = true }
+                Spacer()
                 Spacer()
             }
         }

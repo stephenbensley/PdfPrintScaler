@@ -43,7 +43,6 @@ struct ScaleAndPrintView: View {
             }
             .padding(.top)
         }
-        .padding(40)
         .task {
             await scaleAndPrint()
          }
