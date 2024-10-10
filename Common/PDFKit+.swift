@@ -13,7 +13,7 @@ public extension PDFPage {
         // PDF coordinates are in points with 72 points per inch.
         let ppi = 72.0
         let pageSize = self.bounds(for: .mediaBox)
-        // Mutliply by DPI first to avoid float rounding issues.
+        // Multiply by DPI first to avoid float rounding issues.
         let imageSize = CGSize(
             width:  (pageSize.width  * dpi) / ppi,
             height: (pageSize.height * dpi) / ppi
