@@ -33,7 +33,7 @@ enum PdfError: LocalizedError {
 
 // App details used to populate About page.
 struct PdfPrintScalerInfo: AboutInfo {
-    let appStoreId: Int = 6575389687
+    let appStoreId: Int = 6736712815
     let copyright: String = "© 2024 Stephen E. Bensley"
     let description: String = "Scale & print PDF"
     let gitHubAccount: String = "stephenbensley"
