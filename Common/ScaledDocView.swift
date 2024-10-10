@@ -13,7 +13,7 @@ import UtiliKit
 // dimensions are preserved. If scaleFactor > 1.0, some of the page will be cropped. If
 // scaleFactor < 1.0, whitespace will be added.
 struct ScaledDocView: View {
-    // Document begin viewed.
+    // Document being viewed.
     private let doc: PDFDocument
     // Current scale factor.
     private let scale: Double
