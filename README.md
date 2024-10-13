@@ -8,6 +8,9 @@ PDF Print Scaler is an iOS app and [action extension](https://developer.apple.co
 
 The app can be downloaded for free from the Apple [App Store](https://apps.apple.com/us/app/id6736712815/). There are no in-app purchases or ads.
 
+> [!WARNING]
+> The app store rejected my submission, and I do not intend to resubmit.
+
 ### Privacy
 
 This app does not collect or share any personal information. For complete details, read the [Privacy Policy](https://stephenbensley.github.io/PdfPrintScaler/privacy.html)
